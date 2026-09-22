@@ -1,8 +1,20 @@
 {% extends "base.html" %}
 {% block body %}
 <h1>巡检记录</h1>
+<form class="card" method="get" style="max-width:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <label style="margin:0">按栏收窄</label>
+  <select name="field" style="padding:8px">
+    {% for value, label in search_fields.items %}
+      <option value="{{ value }}" {% if selected_field == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <input name="q" value="{{ keyword }}" placeholder="片段" style="width:220px" />
+  <button type="submit" style="margin-top:0">收窄</button>
+  {% if narrowed %}<a href="{% url 'list' %}">清除</a>{% endif %}
+</form>
+{% if narrowed %}<p>按{{ field_label }}含“{{ keyword }}”收窄，共 {{ rows|length }} 条。</p>{% endif %}
 <table>
-  <thead><tr><th>编号</th><th>实测光强</th><th>结论</th><th>说明</th><th></th></tr></thead>
+  <thead><tr><th>编号</th><th>实测光强</th><th>结论</th><th>说明</th><th>能见度</th><th>潮位</th><th>灯器</th><th></th></tr></thead>
   <tbody>
   {% for row in rows %}
     <tr>
@@ -10,10 +22,13 @@
       <td>{{ row.measured_cd }}</td>
       <td class="{% if row.verdict == '合格' %}ok{% else %}bad{% endif %}">{{ row.verdict }}</td>
       <td>{{ row.note }}</td>
+      <td>{{ row.visibility }}</td>
+      <td>{{ row.tide_level }}</td>
+      <td>{{ row.lamp_device }}</td>
       <td><a href="{% url 'detail' row.pk %}">详情</a></td>
     </tr>
   {% empty %}
-    <tr><td colspan="5">还没有记录</td></tr>
+    <tr><td colspan="8">{% if narrowed %}没有匹配的记录{% else %}还没有记录{% endif %}</td></tr>
   {% endfor %}
   </tbody>
 </table>
