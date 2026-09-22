@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% block body %}
 <h1>巡检记录</h1>
+<form method="get" class="filter">
+  <select name="field">
+    {% for value, label in filter_fields.items %}
+      <option value="{{ value }}" {% if value == active_field %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <input type="text" name="q" value="{{ active_keyword }}" placeholder="输入片段收窄" />
+  <button type="submit">收窄</button>
+  <a href="{% url 'list' %}">清除</a>
+</form>
 <table>
-  <thead><tr><th>编号</th><th>实测光强</th><th>结论</th><th>说明</th><th></th></tr></thead>
+  <thead><tr><th>编号</th><th>实测光强</th><th>结论</th><th>说明</th><th>能见度</th><th>潮位</th><th>灯器</th><th></th></tr></thead>
   <tbody>
   {% for row in rows %}
     <tr>
@@ -10,10 +20,13 @@
       <td>{{ row.measured_cd }}</td>
       <td class="{% if row.verdict == '合格' %}ok{% else %}bad{% endif %}">{{ row.verdict }}</td>
       <td>{{ row.note }}</td>
+      <td>{{ row.visibility|default:"—" }}</td>
+      <td>{{ row.tide_level|default:"—" }}</td>
+      <td>{{ row.lantern|default:"—" }}</td>
       <td><a href="{% url 'detail' row.pk %}">详情</a></td>
     </tr>
   {% empty %}
-    <tr><td colspan="5">还没有记录</td></tr>
+    <tr><td colspan="8">没有符合的记录</td></tr>
   {% endfor %}
   </tbody>
 </table>

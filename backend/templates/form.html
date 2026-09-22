@@ -5,13 +5,19 @@
 <form class="card" method="post">
   {% csrf_token %}
   <label>航标编号</label>
-  <input name="aid_code" />
+  <input name="aid_code" value="{{ form.aid_code }}" />
   <label>实测光强（坎德拉）</label>
-  <input name="measured_cd" type="number" step="0.1" />
+  <input name="measured_cd" type="number" step="0.1" value="{{ form.measured_cd }}" />
   <label>要求光强</label>
-  <input name="required_cd" type="number" step="0.1" value="1200" />
+  <input name="required_cd" type="number" step="0.1" value="{{ form.required_cd }}" />
   <label>方位偏差（度）</label>
-  <input name="bearing_error_deg" type="number" step="0.1" value="0" />
+  <input name="bearing_error_deg" type="number" step="0.1" value="{{ form.bearing_error_deg }}" />
+  <label>能见度</label>
+  <input name="visibility" value="{{ form.visibility }}" />
+  <label>潮位</label>
+  <input name="tide_level" value="{{ form.tide_level }}" />
+  <label>灯器</label>
+  <input name="lantern" value="{{ form.lantern }}" />
   <button type="submit">提交</button>
 </form>
 {% endblock %}
